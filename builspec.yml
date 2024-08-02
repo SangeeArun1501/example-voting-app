@@ -35,6 +35,17 @@ phases:
 
   post_build:
     commands:
+      - echo "Tagging the images for Docker Hub..."
+      - docker tag example-voting-app-worker sangeetha1501/example-voting-app-worker:latest
+      - docker tag example-voting-app-result sangeetha1501/example-voting-app-result:latest
+      - docker tag example-voting-app-vote sangeetha1501/example-voting-app-vote:latest
+      - echo "Pushing the images to Docker Hub..."
+      - docker push sangeetha1501/example-voting-app-worker:latest
+      - docker push sangeetha1501/example-voting-app-result:latest
+      - docker push sangeetha1501/example-voting-app-vote:latest
+      - docker push your-dockerhub-username/redis:latest
+      - docker push your-dockerhub-username/db:latest
+      - echo "Completed"
       - echo "Pushing the image to registry"
       - docker-compose push
       - echo "Build completed successfully!"
