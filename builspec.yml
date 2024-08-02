@@ -1,0 +1,43 @@
+version: 0.2
+
+env:
+  parameter-store:
+    Docker_Username: "/voting_app/docker/username"
+    Docker_Password: "/voting_app/docker/password"
+    Docker_Url: "/voting_app/docker/dockerurl"
+
+phases:
+  install:
+    commands:
+      - echo "Installing Docker Compose"
+      - sudo apt-get update
+      - sudo apt install docker.io
+      - sudo apt-get install -y \
+          ca-certificates \
+          curl \
+          gnupg \
+          lsb-release
+      - sudo mkdir -p /etc/apt/keyrings
+      - curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --dearmor -o /etc/apt/keyrings/docker.gpg
+      - echo \
+          "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.gpg] https://download.docker.com/linux/ubuntu \
+          $(lsb_release -cs) stable" | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
+      - sudo apt-get update
+      - sudo apt-get install -y docker-compose-plugin
+      - docker-compose --version
+  pre_build:
+    commands:
+      - echo "logging in to DockerHub"
+      - echo "$Docker_Password" | docker login -u "$Docker_Username" --password-stdin "$Docker_Url"
+
+  build:
+    commands:
+      - echo "Building the image"
+      - docker-compose build
+      - docker tag
+
+  post_build:
+    commands:
+      - echo "Pushing the image to registry"
+      - docker-compose push
+      - echo "Build completed successfully!"
