@@ -25,13 +25,10 @@ phases:
       - sudo apt-get update
       - sudo apt-get install -y docker-compose-plugin
       - docker-compose --version
-  pre_build:
+  build:
     commands:
       - echo "logging in to DockerHub"
       - echo "$Docker_Password" | docker login -u "$Docker_Username" --password-stdin "$Docker_Url"
-
-  build:
-    commands:
       - echo "Building the image"
       - docker-compose build
       - docker tag
