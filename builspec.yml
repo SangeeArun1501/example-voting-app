@@ -49,3 +49,4 @@ phases:
       - echo "Pushing the image to registry"
       - docker-compose push
       - echo "Build completed successfully!"
+      
