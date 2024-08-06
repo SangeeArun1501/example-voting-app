@@ -15,5 +15,5 @@ spec:
         app: worker
     spec:
       containers:
-      - image: sangeetha1501/examplevotingapp_worker
+      - image: sangeetha1501/src-worker
         name: worker
