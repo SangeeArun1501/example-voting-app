@@ -8,6 +8,12 @@ on:
       - 'sangeetha1501/src-worker'
     tags:
       - 'latest'
+  workflow_dispatch:
+    inputs:
+      imageTag:
+        description: 'Image Tag to Deploy'
+        required: true
+        default: 'latest'
 
 jobs:
   deploy:
