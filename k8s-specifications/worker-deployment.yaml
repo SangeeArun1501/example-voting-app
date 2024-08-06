@@ -17,3 +17,5 @@ spec:
       containers:
       - image: sangeetha1501/src-worker
         name: worker
+      imagePullSecrets:
+      - name: regcred  
