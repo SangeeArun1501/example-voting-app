@@ -23,9 +23,11 @@ jobs:
         sudo mv kubectl /usr/local/bin/
 
     - name: Configure kubeconfig
+      env:
+        KUBECONFIG: ${{ secrets.KUBECONFIG }}
       run: |
         mkdir -p ~/.kube
-        echo "${{ secrets.KUBECONFIG }}" | base64 --decode > ~/.kube/config
+        echo "$KUBECONFIG" | base64 --decode > ~/.kube/config
 
     - name: Deploy to Kubernetes
       run: |
