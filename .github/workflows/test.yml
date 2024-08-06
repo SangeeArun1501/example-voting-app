@@ -1,13 +1,6 @@
 name: Deploy to Kubernetes
 
 on:
-  push:
-    repositories:
-      - 'sangeetha1501/src-result'
-      - 'sangeetha1501/src-vote'
-      - 'sangeetha1501/src-worker'
-    tags:
-      - 'latest'
   workflow_dispatch:
     inputs:
       imageTag:
@@ -33,18 +26,6 @@ jobs:
       run: |
         mkdir -p ~/.kube
         echo "${{ secrets.KUBECONFIG }}" | base64 --decode > ~/.kube/config
-
-    - name: Update image tags in Kubernetes manifests
-      env:
-        IMAGE_TAG_1: ${{ github.event.client_payload.image_tag_1 }}
-        IMAGE_TAG_2: ${{ github.event.client_payload.image_tag_2 }}
-        IMAGE_TAG_3: ${{ github.event.client_payload.image_tag_3 }}
-      run: |
-        for file in k8s-specifications/*.yaml; do
-          sed -i "s#image: sangeetha1501/examplevotingapp_vote:.*#image: sangeetha1501/src-result:${IMAGE_TAG_1}#" k8s-specifications/result-deployment.yaml
-          sed -i "s#image: sangeetha1501/examplevotingapp_worker:.*#image: sangeetha1501/src-vote:${IMAGE_TAG_2}#" k8s-specifications/vote-deployment.yaml
-          sed -i "s#image: sangeetha1501/examplevotingapp_result:.*#image: sangeetha1501/src-worker:${IMAGE_TAG_3}#" k8s-specifications/worker-deployment.yaml
-        done
 
     - name: Deploy to Kubernetes
       run: |
