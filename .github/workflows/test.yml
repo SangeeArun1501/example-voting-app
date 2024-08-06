@@ -29,4 +29,11 @@ jobs:
 
     - name: Deploy to Kubernetes
       run: |
-        kubectl apply -f k8s-specifications/*
+        kubectl apply -f k8s-specifications/db-service.yaml
+        kubectl apply -f k8s-specifications/redis-deployment.yaml
+        kubectl apply -f k8s-specifications/redis-service.yaml
+        kubectl apply -f k8s-specifications/result-deployment.yaml
+        kubectl apply -f k8s-specifications/result-service.yaml
+        kubectl apply -f k8s-specifications/vote-deployment.yaml
+        kubectl apply -f k8s-specifications/vote-service.yaml
+        kubectl apply -f k8s-specifications/worker-deployment.yaml
