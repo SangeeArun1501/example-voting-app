@@ -1,8 +1,13 @@
 name: Deploy to Kubernetes
 
 on:
-  repository_dispatch:
-    types: [docker-image-push]
+  push:
+    repositories:
+      - 'sangeetha1501/src-result'
+      - 'sangeetha1501/src-vote'
+      - 'sangeetha1501/src-worker'
+    tags:
+      - 'latest'
 
 jobs:
   deploy:
