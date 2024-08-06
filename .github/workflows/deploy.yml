@@ -1,0 +1,40 @@
+name: Deploy to Kubernetes
+
+on:
+  repository_dispatch:
+    types: [docker-image-push]
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+
+    - name: Set up kubectl
+      run: |
+        curl -LO "https://dl.k8s.io/release/$(curl -sL https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
+        chmod +x kubectl
+        sudo mv kubectl /usr/local/bin/
+
+    - name: Configure kubeconfig
+      run: |
+        mkdir -p ~/.kube
+        echo "${{ secrets.KUBECONFIG }}" | base64 --decode > ~/.kube/config
+
+    - name: Update image tags in Kubernetes manifests
+      env:
+        IMAGE_TAG_1: ${{ github.event.client_payload.image_tag_1 }}
+        IMAGE_TAG_2: ${{ github.event.client_payload.image_tag_2 }}
+        IMAGE_TAG_3: ${{ github.event.client_payload.image_tag_3 }}
+      run: |
+        for file in k8s-specifications/*.yaml; do
+          sed -i "s#image: sangeetha1501/examplevotingapp_vote:.*#image: sangeetha1501/src-result:${IMAGE_TAG_1}#" k8s-specifications/result-deployment.yaml
+          sed -i "s#image: sangeetha1501/examplevotingapp_worker:.*#image: sangeetha1501/src-vote:${IMAGE_TAG_2}#" k8s-specifications/vote-deployment.yaml
+          sed -i "s#image: sangeetha1501/examplevotingapp_result:.*#image: sangeetha1501/src-worker:${IMAGE_TAG_3}#" k8s-specifications/worker-deployment.yaml
+        done
+
+    - name: Deploy to Kubernetes
+      run: |
+        kubectl apply -f k8s-specifications/*
